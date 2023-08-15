@@ -31,7 +31,7 @@ namespace MessageQueue
                 var message = JsonSerializer.Deserialize<FileMessage>(content);
 
                 var random = new Random();
-                var number = random.Next(1 - 10);
+                var number = random.Next(1, 100);
                 if (number%2 == 0)
                 {
                     throw new Exception();
