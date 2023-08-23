@@ -10,19 +10,21 @@ namespace MessageQueue
         {
             for (int i = 0; i < 5; i++)
             {
-                var worker = new Worker();
+                var worker = new Worker(i);
                 workers.Add(worker);
                 worker.ExecuteAsync(stoppingToken);
             }
             return Task.CompletedTask;
         }
 
-        public override void Dispose()
+        public override Task StopAsync(CancellationToken cancellationToken)
         {
             foreach (Worker worker in workers)
             {
                 worker.Dispose();
             }
+
+            return base.StopAsync(cancellationToken);
         }
     }
 }
