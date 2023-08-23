@@ -10,14 +10,17 @@ namespace MessageQueue
     {
         private IConnection _connection;
         private IModel _channel;
+        private int _workerNumber;
 
-        public Worker()
+        public Worker(int number)
         {
+
             var factory = new ConnectionFactory { HostName = "localhost" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: "FileQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+            _workerNumber = number;
         }
 
         public Task ExecuteAsync(CancellationToken stoppingToken)
@@ -32,13 +35,14 @@ namespace MessageQueue
 
                 var random = new Random();
                 var number = random.Next(1, 100);
-                if (number%2 == 0)
+                if (number % 2 == 0)
                 {
                     throw new Exception();
                 }
-                 
-                File.Copy(message.OriginLocation, message.NewLocation, true);
 
+                File.Copy(Path.Combine(message.OriginLocation, message.FileName), Path.Combine(message.NewLocation, message.FileName), true);
+                Console.WriteLine($"File {message.FileName} was copied by {_workerNumber} worker");
+                
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 
@@ -49,9 +53,8 @@ namespace MessageQueue
 
         public void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
-            Dispose();
+            _channel.Dispose();
+            _connection.Dispose();
         }
     }
 }

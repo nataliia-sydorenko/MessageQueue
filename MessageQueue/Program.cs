@@ -9,7 +9,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<Producer>();
-builder.Services.AddSingleton<Worker>();
 builder.Services.AddHostedService<WorkerFactory>();
 
 var app = builder.Build();
