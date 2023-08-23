@@ -2,6 +2,7 @@
 using RabbitMQ.Client;
 using System.Text.Json;
 using System.Text;
+using System.Reflection;
 
 public class Producer
 {
@@ -18,8 +19,6 @@ public class Producer
         if (!dir.Exists)
             throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
 
-        //Directory.CreateDirectory(message.NewLocation);
-
         foreach (FileInfo file in dir.GetFiles())
         {
             fileMessage.FileName = file.Name;
@@ -28,7 +27,10 @@ public class Producer
             var body = Encoding.UTF8.GetBytes(message);
 
             var props = channel.CreateBasicProperties();
-            props.Expiration = "60000";
+            props.ContentType = "text/plain";
+            props.DeliveryMode = 2;
+            props.Expiration = "1000";
+
             channel.BasicPublish(exchange: "filecopywithlogs",
                            routingKey: "",
                            basicProperties: null,

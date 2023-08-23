@@ -10,7 +10,7 @@ namespace MessageQueue
         {
             for (int i = 0; i < 5; i++)
             {
-                var worker = new Worker(i);
+                var worker = new Worker(1);
                 workers.Add(worker);
                 worker.ExecuteAsync(stoppingToken);
             }

@@ -3,7 +3,6 @@ using RabbitMQ.Client;
 using System.Text;
 using MessageQueue.Models;
 using System.Text.Json;
-using System.Data.Common;
 
 namespace MessageQueue
 {
@@ -41,11 +40,11 @@ namespace MessageQueue
 
                 var random = new Random();
                 var number = random.Next(1, 100);
-                if (number%2 == 0)
+                if (number % 2 == 0)
                 {
                     throw new Exception();
                 }
-                 
+
                 File.Copy(Path.Combine(message.OriginLocation, message.FileName), Path.Combine(message.NewLocation, message.FileName), true);
                 Console.WriteLine($"File {message.FileName} was copied by {_workerNumber} worker");
             };
